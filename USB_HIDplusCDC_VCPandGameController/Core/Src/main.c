@@ -23,7 +23,7 @@
  * IMPORTANT @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
  * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
  * After regeration Source Code by CubeMX go to:
- * Middlewares\ST\STM32_USB_Device_Library\Class
+ * Middlewares\ST\STM32_USB_Device_Library\Class\usbd_cdc.c
  * Comment Line 655 656
  * //          USBD_CtlError(pdev, req);
  * //          ret = USBD_FAIL;
