@@ -652,8 +652,8 @@ static uint8_t  USBD_CDC_Setup(USBD_HandleTypeDef *pdev,
           break;
 
         default:
-          USBD_CtlError(pdev, req);
-          ret = USBD_FAIL;
+//          USBD_CtlError(pdev, req);
+//          ret = USBD_FAIL;
           break;
       }
       break;
