@@ -28,7 +28,9 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "usbd_hidGameController.h"
+#include "usbd_composite.h"
+#include "usb_descriptors.h"
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN PV */
@@ -55,6 +57,33 @@ USBD_HandleTypeDef hUsbDeviceFS;
  * -- Insert your external function declaration here --
  */
 /* USER CODE BEGIN 1 */
+void reenumerate(){
+	GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitStruct.Pin = GPIO_PIN_12;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+//reenumerate
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
+	HAL_Delay(500);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
+	HAL_Delay(500);
+}
+
+void InitCompositeDevice() {
+    USBD_Composite_Set_Descriptor(COMPOSITE_CDC_HID_DESCRIPTOR, COMPOSITE_CDC_HID_DESCRIPTOR_SIZE);
+
+    USBD_Composite_Set_Classes(&USBD_CDC, &USBD_HID);
+
+    in_endpoint_to_class[HID_EPIN_ADDR & 0x7F] = 1;
+
+    reenumerate();
+    USBD_Init(&hUsbDeviceFS, &FS_Desc_Composite, DEVICE_FS);
+    USBD_RegisterClass(&hUsbDeviceFS, &USBD_Composite);
+    USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS);
+    USBD_Start(&hUsbDeviceFS);
+}
 
 /* USER CODE END 1 */
 
@@ -65,7 +94,9 @@ USBD_HandleTypeDef hUsbDeviceFS;
 void MX_USB_DEVICE_Init(void)
 {
   /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
+	InitCompositeDevice();
 
+#ifdef NormalUsbDeviceFromCube
   /* USER CODE END USB_DEVICE_Init_PreTreatment */
 
   /* Init Device Library, add supported class and start the library. */
@@ -87,7 +118,7 @@ void MX_USB_DEVICE_Init(void)
   }
 
   /* USER CODE BEGIN USB_DEVICE_Init_PostTreatment */
-
+#endif
   /* USER CODE END USB_DEVICE_Init_PostTreatment */
 }
 

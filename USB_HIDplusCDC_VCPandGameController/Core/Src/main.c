@@ -16,6 +16,26 @@
   *
   ******************************************************************************
   */
+/*
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * IMPORTANT @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * After regeration Source Code by CubeMX go to:
+ * Middlewares\ST\STM32_USB_Device_Library\Class
+ * Comment Line 655 656
+ * //          USBD_CtlError(pdev, req);
+ * //          ret = USBD_FAIL;
+ * That's what you need change after Code Regeneration
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -26,7 +46,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "usbd_hidGameController.h"
+#include "usbd_desc.h"
+#include "usbd_composite.h"
+#include "usb_descriptors.h"
+#include "usbd_cdc_if.h"
+#include "usb_device.h"
 
+#include "wii_cc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,6 +84,57 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void VCP_HostHelloSendMessage()
+{
+	static uint32_t CDC_OpenTime;
+	if(!USB_CDChost_com_port_open)
+	{
+		CDC_OpenTime= HAL_GetTick();
+	}
+	if(USB_CDChost_com_port_open && (CDC_OpenTime + 150 < HAL_GetTick()) )
+	{
+		CDC_OpenTime= HAL_GetTick();
+		static char Buff[]="HELLO_HOST, this program working as ECHO!\n\rSend your message\n\r";
+		CDC_Transmit_FS((uint8_t*)Buff, sizeof(Buff)-1);
+		USB_CDChost_com_port_open=0;
+	}
+}
+
+void CDC_ReveiveCallback(uint8_t *Buffer, uint8_t Length)
+{
+//i dont modify it I won't copy anything because it is interrupt, i know how to avoid it, and make for example buffer queue. (Simple)
+	//but Iam lazy ;)
+	if(Length > 0)
+	{
+		CDC_Transmit_FS(Buffer, Length);
+	}
+}
+
+WII_CC_DATA_t wii_data;
+
+void wiiCCtoUSB(WII_CC_DATA_t* data)
+{
+	uint8_t packet[8]={0};
+	UNUSED(packet);
+//now its copy for copy but I don't will use it finally
+	packet[0] = (uint8_t) data->left_trigger;
+	packet[1] = (uint8_t) data->right_trigger;
+	packet[2] = (uint8_t) data->left_analog_x;
+	packet[3] = (uint8_t) data->left_analog_y;
+	packet[4] = (uint8_t) data->right_analog_x;
+	packet[5] = (uint8_t) data->right_analog_y;
+
+	packet[6] = *((uint8_t*) &data->buttons);
+	packet[7] = *(((uint8_t*) &data->buttons)+1);
+
+//	usbResetTransfer();
+//
+//	USB_SIL_Write(EP1_IN, packet, 8);
+//	SetEPTxValid(ENDP1);
+//
+//	while (usbCanTransfer() == 0);
+	USBD_HID_SendReport(&hUsbDeviceFS, packet, 8);
+}
 
 /* USER CODE END 0 */
 
@@ -92,13 +170,16 @@ int main(void)
   MX_DMA_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  wiiCCRead(&wii_data);
+	  wiiCCtoUSB(&wii_data);
+
+	  VCP_HostHelloSendMessage();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

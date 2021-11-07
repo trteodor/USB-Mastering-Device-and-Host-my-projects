@@ -95,7 +95,14 @@ uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
 uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
-
+USBD_CDC_LineCodingTypeDef LineCoding =
+    {
+    		//default values
+    115200, /* baud rate*/
+    0x00,   /* stop bits-1*/
+    0x00,   /* parity - none*/
+    0x08    /* nb. of bits 8*/
+    };
 /* USER CODE END PRIVATE_VARIABLES */
 
 /**
@@ -110,7 +117,8 @@ uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
-
+uint8_t USB_CDChost_com_port_open;
+USBD_SetupReqTypedef *requsbSetup;
 /* USER CODE END EXPORTED_VARIABLES */
 
 /**
@@ -128,6 +136,11 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length);
 static int8_t CDC_Receive_FS(uint8_t* pbuf, uint32_t *Len);
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION */
+__weak void CDC_ReveiveCallback(uint8_t *Buffer, uint8_t Length)
+{
+	UNUSED(Buffer);
+	UNUSED(Length);
+}
 
 /* USER CODE END PRIVATE_FUNCTIONS_DECLARATION */
 
@@ -218,16 +231,36 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   /*                                        4 - Space                            */
   /* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
   /*******************************************************************************/
-    case CDC_SET_LINE_CODING:
+//    static uint8_t lineCoding[7] // 115200bps, 1stop, no parity, 8bit
+//        = { 0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08 };
 
+    case CDC_SET_LINE_CODING:
+    	//it isn't necessary but for formal :)
+        LineCoding.bitrate    = (uint32_t)(pbuf[0] | (pbuf[1] << 8) |\
+                                (pbuf[2] << 16) | (pbuf[3] << 24));
+        LineCoding.format     = pbuf[4];
+        LineCoding.paritytype = pbuf[5];
+        LineCoding.datatype   = pbuf[6];
     break;
 
     case CDC_GET_LINE_CODING:
-
+        pbuf[0] = (uint8_t)(LineCoding.bitrate);
+        pbuf[1] = (uint8_t)(LineCoding.bitrate >> 8);
+        pbuf[2] = (uint8_t)(LineCoding.bitrate >> 16);
+        pbuf[3] = (uint8_t)(LineCoding.bitrate >> 24);
+        pbuf[4] = LineCoding.format;
+        pbuf[5] = LineCoding.paritytype;
+        pbuf[6] = LineCoding.datatype;
     break;
 
     case CDC_SET_CONTROL_LINE_STATE:
 
+    	requsbSetup=(USBD_SetupReqTypedef *)pbuf;
+
+    	if( (requsbSetup->wValue&0x0001) != 0)
+    		USB_CDChost_com_port_open = 1;
+    	else
+    		USB_CDChost_com_port_open = 0;
     break;
 
     case CDC_SEND_BREAK:
@@ -260,8 +293,21 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+	//here we can for example create queue of buffers to don't copy data
+	//anyway simple, dk how to explain
+	//For example if we receive part of data, we maybe would read this data later
+	//So inaf just use another buffer, and the function SetRx buffor can set it
+	//Here we can just set flag data avaiable and number buffor, but it is a bit more complex but still simple :)
+	// uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
+	// just create few buffer like this above to create queue :)
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+
+  /*
+  * My receiver code
+  */
+  CDC_ReveiveCallback(Buf, Len[0]); // If Len is a pointer, take first element;
+
   return (USBD_OK);
   /* USER CODE END 6 */
 }
