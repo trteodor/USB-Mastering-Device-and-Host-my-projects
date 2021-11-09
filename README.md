@@ -7,41 +7,27 @@ In this repository i Mastering how to operate with USB Device And Host.
 I will probably prepare few example. 
 
 Each folder on top of the repository consist one example.
-
+To get Detailed for choosen example go in him folder, and read "Readme" file for the example
 
 1. Example - Composite device - HID and CDC Class (VCP and Game Controller) **using CubeMX Stack**
-
 	* Folder name: **USB_HIDplusCDC_VCPandGameController**
 
-Prepared example is build from:
-* VCP - Working as echo
-
-* Gamecontroller -  i planning use Device from this link: http://wiibrew.org/wiki/Wiimote/Extension_Controllers/Classic_Controller
-
-To Create this example i used USB Stack delivered by CubeMX. In my opinion this stack isn't friendly but it is only my opinion. I had to rebuild
-a large part of the stack.(Maybe i don't have else sufficient experiance to easy operate with this stack) 
-You can check changes before this commit: 
-__*"VCP and GameController Is Detected correctly"*__ 
-to see what exacly i did. To check te process how i run this example.
- After regeration Source Code by CubeMX go to: (small change is required)
- * Middlewares\ST\STM32_USB_Device_Library\Class\usbd_cdc.c
- * Comment Line 655 656
- * //          USBD_CtlError(pdev, req);
- * //          ret = USBD_FAIL;
-
-This example will be develop when i get the gamecontroller to my hands. But evrything should work now correctly.
-
-
-
-# References:
+# General References:
 
 https://wydawnictwo.btc.pl/elektronika/204656-usb-dla-niewtajemniczonych-w-przykladach-na-mikrokontrolery-stm32-e-book.html
+
 https://www.usb.org/
+
 https://anvilelectronics.ovh/tinyusb-na-stm32-device-cdc/
+
 https://github.com/hathach/tinyusb?fbclid=IwAR2eV_u5AAk7GbArpe6f22GNZaFtwJsuoiuO3vi2VzL7FNbEQ0NLS_DfuY4
+
 https://github.com/pyusb/pyusb/blob/master/docs/tutorial.rst
+
 https://www.elektroda.pl/rtvforum/topic3310418.html
+
 https://github.com/x893/STM32F103-DualCDC
+
 https://sudonull.com/post/68144-CDC-MSC-USB-Composite-Device-on-STM32-HAL
 
 The last only as Curiosity: 

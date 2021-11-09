@@ -116,11 +116,8 @@ uint8_t packet[8]={0};
 
 void wiiCCtoUSB(WII_CC_DATA_t* data)
 {
-for(int i =0; i<8; i++)
-{
-	packet[i]=0;
-}
-//now its copy for copy but I don't will use it finally
+static uint8_t packet[8]={0};
+
 	packet[0] = (uint8_t) data->left_trigger;
 	packet[1] = (uint8_t) data->right_trigger;
 	packet[2] = (uint8_t) data->left_analog_x;
@@ -131,12 +128,6 @@ for(int i =0; i<8; i++)
 	packet[6] = *((uint8_t*) &data->buttons);
 	packet[7] = *(((uint8_t*) &data->buttons)+1);
 
-//	usbResetTransfer();
-//
-//	USB_SIL_Write(EP1_IN, packet, 8);
-//	SetEPTxValid(ENDP1);
-//
-//	while (usbCanTransfer() == 0);
 	USBD_HID_SendReport(&hUsbDeviceFS, packet, 8);
 }
 
