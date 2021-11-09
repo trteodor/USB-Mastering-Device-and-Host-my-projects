@@ -24,7 +24,7 @@
 #include <stm32f1xx_hal.h>
 #include "i2c.h"
 
-#define WII_CONTROLLER_ID	0x52
+#define WII_CONTROLLER_ID	(0x52 << 1)
 
 typedef struct wiiCCButtonsTag
 {
@@ -46,10 +46,10 @@ typedef struct wiiCCButtonsTag
 	uint8_t b:1;
 	uint8_t zl:1;
 	
-} WII_CC_BUTTONS;
+}WII_CC_BUTTONS;
 
 /* WII Classic Controller Data */
-typedef struct wiiCCDataTag
+typedef struct  __attribute__((packed, aligned(4))) wiiCCDataTag
 {
 	int8_t left_analog_x;
 	int8_t left_analog_y;
@@ -62,7 +62,7 @@ typedef struct wiiCCDataTag
 	
 	WII_CC_BUTTONS buttons;	
 	
-} WII_CC_DATA_t;
+} __attribute__((packed, aligned(4))) WII_CC_DATA_t;
 
 void wiiCCInit(void);
 void wiiCCRead(WII_CC_DATA_t* data);

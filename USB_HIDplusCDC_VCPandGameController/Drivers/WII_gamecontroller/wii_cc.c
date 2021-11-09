@@ -29,8 +29,9 @@ static WII_CC_DATA_t initial_data;
 static void wiiCCGetData(WII_CC_DATA_t* data)
 {
 	uint8_t buf[6]={0};
-//	HAL_I2C_Mem_Read(hi2c, DevAddress, MemAddress, MemAddSize, pData, Size, Timeout)
-//	HAL_I2C_Mem_Read_DMA(hi2c, DevAddress, MemAddress, MemAddSize, pData, Size)
+
+	HAL_I2C_Master_Transmit(&hi2c1, WII_CONTROLLER_ID, 0x00, 1, 100);
+	HAL_I2C_Master_Receive(&hi2c1, WII_CONTROLLER_ID, buf, 6, 100);
 	
 	data->left_analog_x = (buf[0] & 0x3F);
 	data->left_analog_y = (buf[1] & 0x3F);
@@ -56,23 +57,15 @@ static void wiiCCGetData(WII_CC_DATA_t* data)
 void wiiCCInit(void)
 {
 	uint8_t data[2];
-	UNUSED(data); //@@@@@@@@@@@@@@@DELETE THIS LINE
-	uint8_t i;
-	
 	data[0] = 0xF0;
 	data[1] = 0x55;
-//	i2cWrite(data, WII_CONTROLLER_ID, 2);
-//	HAL_I2C_Master_Transmit(hi2c, DevAddress, pData, Size, Timeout)
 
-	
-	HAL_Delay(1);
-		
+	HAL_I2C_Master_Transmit(&hi2c1, WII_CONTROLLER_ID, data, 2, 100);
+
 	data[0] = 0xFB;
 	data[1] = 0x00;
-	//	i2cWrite(data, WII_CONTROLLER_ID, 2);
-	//	HAL_I2C_Master_Transmit(hi2c, DevAddress, pData, Size, Timeout)
-	
-	for (i = 0; i < 10; i++)
+	HAL_I2C_Master_Transmit(&hi2c1, WII_CONTROLLER_ID, data, 2, 100);
+	for (int i = 0; i < 10; i++)
 	{
 		wiiCCGetData(&initial_data);
 	}

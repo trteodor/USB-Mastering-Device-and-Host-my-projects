@@ -112,10 +112,14 @@ void CDC_ReveiveCallback(uint8_t *Buffer, uint8_t Length)
 
 WII_CC_DATA_t wii_data;
 
+uint8_t packet[8]={0};
+
 void wiiCCtoUSB(WII_CC_DATA_t* data)
 {
-	uint8_t packet[8]={0};
-	UNUSED(packet);
+for(int i =0; i<8; i++)
+{
+	packet[i]=0;
+}
 //now its copy for copy but I don't will use it finally
 	packet[0] = (uint8_t) data->left_trigger;
 	packet[1] = (uint8_t) data->right_trigger;
@@ -134,6 +138,27 @@ void wiiCCtoUSB(WII_CC_DATA_t* data)
 //
 //	while (usbCanTransfer() == 0);
 	USBD_HID_SendReport(&hUsbDeviceFS, packet, 8);
+}
+
+uint8_t i2cSimpleScanner()
+{
+	HAL_StatusTypeDef result;
+ 	uint8_t i;
+ 	for (i=1; i<128; i++)
+ 	{
+ 	  result = HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(i<<1), 2, 10);
+ 	  if (result != HAL_OK) // HAL_ERROR or HAL_BUSY or HAL_TIMEOUT
+ 	  {
+ 		  volatile int i=0;
+ 		  UNUSED(i);
+ 		 //not found on the addres
+ 	  }
+ 	  if (result == HAL_OK)
+ 	  {
+ 		return i;
+ 	  }
+ 	}
+ 	return 0;
 }
 
 /* USER CODE END 0 */
@@ -170,6 +195,14 @@ int main(void)
   MX_DMA_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+
+//uint8_t DeviceAddres = i2cSimpleScanner();
+//	if(DeviceAddres != 0)
+//	{
+//		//game controller adress found! at 0x52
+//		//Print address or send via UART/CDC, dk :)
+//	}
+  wiiCCInit();
   /* USER CODE END 2 */
 
   /* Infinite loop */
