@@ -19,6 +19,10 @@ to see what exacly i did. To check te process how i run this example.
 **How connect:** (Use Board: Well knowed - BluePill with stm32f103c8t6
 ![Connections](https://github.com/trteodor/USB-Mastering-Device-and-Host-my-projects/blob/master/pictures/STM32-WiiContollerClassic%20normal%20and%20Pro%20its%20same.jpg)
 
+How test in Windows 10:
+Run the app from menustart:
+* joy.cpl
+
 # References:
 
 http://wiibrew.org/wiki/Wiimote/Extension_Controllers/Classic_Controller
