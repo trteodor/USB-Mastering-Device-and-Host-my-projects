@@ -1,3 +1,7 @@
 [submodule "USB_HIDplusCDC_VCP_andGCntrl_USBtiny/Middlewares/tinyusb"]
 	path = USB_HIDplusCDC_VCP_andGCntrl_USBtiny/Middlewares/tinyusb
 	url = https://github.com/hathach/tinyusb
+
+[submodule "USB_VendorDevice_tinyUSB/Middlewares/tinyUSB"]
+	path = USB_VendorDevice_tinyUSB/Middlewares/tinyUSB
+	url = https://github.com/hathach/tinyusb.git

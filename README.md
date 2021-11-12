@@ -11,7 +11,15 @@ To get Detailed for choosen example go in him folder, and read "Readme" file for
 
 1. Example - Composite device - HID and CDC Class (VCP and Game Controller) **using CubeMX Stack**
 	* Folder name: **USB_HIDplusCDC_VCPandGameController**
-
+	* Tested, working correctly on Windows 10
+2. Example - Composite device - HID and CDC Class (VCP and Game Controller) **using tinyUSB library**
+	* Folder name: **USB_HIDplusCDC_VCP_andGCntrl_USBtiny**
+	* Tested, working correctly on Windows 10
+3. Example - Vendor specific device **using tinyUSB library**
+	* Folder name: **USB_VendorDevice_tinyUSB**
+	*  - work in progrss
+	
+	
 # General References:
 
 https://wydawnictwo.btc.pl/elektronika/204656-usb-dla-niewtajemniczonych-w-przykladach-na-mikrokontrolery-stm32-e-book.html
