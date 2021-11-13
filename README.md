@@ -9,6 +9,7 @@ I will probably prepare few example.
 Each folder on top of the repository consist one example.
 To get Detailed for choosen example go in him folder, and read "Readme" file for the example
 
+# I run prepared examples on stm32f103c8t6 (BluePill board with usb connector) 
 1. Example - Composite device - HID and CDC Class (VCP and Game Controller) **using CubeMX Stack**
 	* Folder name: **USB_HIDplusCDC_VCPandGameController**
 	* Tested, working correctly on Windows 10
@@ -22,30 +23,30 @@ To get Detailed for choosen example go in him folder, and read "Readme" file for
 	
 # General References:
 
-https://wydawnictwo.btc.pl/elektronika/204656-usb-dla-niewtajemniczonych-w-przykladach-na-mikrokontrolery-stm32-e-book.html
+* https://wydawnictwo.btc.pl/elektronika/204656-usb-dla-niewtajemniczonych-w-przykladach-na-mikrokontrolery-stm32-e-book.html
 
-https://www.usb.org/
+* https://www.usb.org/
 
-https://anvilelectronics.ovh/tinyusb-na-stm32-device-cdc/
+* https://github.com/hathach/tinyusb?fbclid=IwAR2eV_u5AAk7GbArpe6f22GNZaFtwJsuoiuO3vi2VzL7FNbEQ0NLS_DfuY4
 
-https://github.com/hathach/tinyusb?fbclid=IwAR2eV_u5AAk7GbArpe6f22GNZaFtwJsuoiuO3vi2VzL7FNbEQ0NLS_DfuY4
+* https://www.elektroda.pl/rtvforum/topic3310418.html
 
-https://github.com/pyusb/pyusb/blob/master/docs/tutorial.rst
+* https://github.com/x893/STM32F103-DualCDC
 
-https://www.elektroda.pl/rtvforum/topic3310418.html
+* https://sudonull.com/post/68144-CDC-MSC-USB-Composite-Device-on-STM32-HAL
 
-https://github.com/x893/STM32F103-DualCDC
+**How to tinyUSB in STM32CubeIDE:**
 
-https://sudonull.com/post/68144-CDC-MSC-USB-Composite-Device-on-STM32-HAL
+* https://anvilelectronics.ovh/tinyusb-na-stm32-device-cdc/
 
 
 **PyUsb:**
 
-https://github.com/pyusb/pyusb/blob/master/docs/tutorial.rst
+* https://github.com/pyusb/pyusb/blob/master/docs/tutorial.rst
 
-https://developer.cisco.com/docs/the-cisco-pyusb-developer-guide/
+* https://developer.cisco.com/docs/the-cisco-pyusb-developer-guide/
 
-https://www.ontrak.net/LibUSBPy.htm
+* https://www.ontrak.net/LibUSBPy.htm
 
 
 

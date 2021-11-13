@@ -74,5 +74,4 @@ for i in range(20+1):
 
 #this simple script is created only for test, i should create dedicated thread for read for example ;) 
 
-
 usb.util.dispose_resources(dev)
